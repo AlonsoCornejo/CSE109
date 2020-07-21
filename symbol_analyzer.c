@@ -1,3 +1,8 @@
+//Course:System Software
+//Professor: Houria Oudghiri
+//July 20,2020
+//This program simulates a finite state machine(FSM) enviroment and returns the different states of inputs
+
 #include <stdio.h>
 #include <stdio.h>
 #include <string.h>
@@ -5,14 +10,18 @@
 #include <ctype.h>
 #define SIZE 100
 
+//Declaring the structure
 typedef enum{ START, IDENTIFIER, NUMBER,
 BUILDING_IDENTIFIER, BUILDING_NUMBER
 } state;  
 
+//Declaring function headings
 state transition(state a,char b);
 int find_key(char *item);
 
+//Main Function
 int main(int argc, char* argv[]){
+  //Some important variables for the program
   char input_filename[SIZE], output_filename[SIZE];
   FILE *input_file1, *output_file1;
   char ch;
@@ -20,6 +29,7 @@ int main(int argc, char* argv[]){
   int num_number=0;
   int num_keyword=0;
 
+  //Check the correctness of the command line arguments
   switch(argc){
     case 1:
       printf("Error,not enough arguments");
@@ -44,12 +54,16 @@ int main(int argc, char* argv[]){
   char current_char = getc(input_file1);
   char item[30];
   int index=0;
+  //Check every item in file text
   while(current_char != EOF){
   current_state = transition(current_state, current_char);
   
+  //Create a string from joined characters
   if(!isspace(current_char)){
     item[index++]=current_char;
   }
+
+  //Check the state to print it
   if(current_state == IDENTIFIER){  
     item[index]='\0';
     if(find_key(item)==1){
@@ -60,7 +74,7 @@ int main(int argc, char* argv[]){
       printf("%s:Identifier\n",item);
     }
     current_state = START;// move to new data item
-    index=0;
+    index=0;//Make string blank again
   }
   
   if (current_state == NUMBER){
@@ -68,15 +82,18 @@ int main(int argc, char* argv[]){
     item[index]='\0';
     printf("%s: Number\n",item);
     current_state = START;
-    index=0;
+    index=0;//Make string blank again
   }
-  current_char = getc(input_file1);//read the next character from the input file
+  current_char = getc(input_file1);
+
   }//end of while loop
+  //Print number of each state
   printf("Number of identifiers: %d\n",num_identifier);
   printf("Number of keyword: %d\n",num_keyword);
   printf("Number of numbers: %d\n",num_number);
 }//end of main
 
+//Function to check the state the item is present
 state transition(state a,char b){
   state next_state;
   if(a==START&&isspace(b)){//START
@@ -106,6 +123,7 @@ state transition(state a,char b){
   return next_state;
 }//end of function
 
+//Function to find if an item is a keyword or Identifier
 int find_key(char *item){
   char charr[32][10]={
     "auto", "break","case", "char", "const", "continue",
